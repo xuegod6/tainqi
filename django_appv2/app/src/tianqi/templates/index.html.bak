@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>天气查询系统</title>
+    <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+    <style>
+        body {
+            background: green;
+        }
+        #box {
+            background: black;
+            color: aliceblue;
+            border: 15px darkgreen solid;
+            border-radius: 15px;
+
+        }
+
+        #box div {
+            margin: 20px 80px;
+
+        }
+
+        li {
+            padding-top: 10px;
+            margin: 14px;
+            list-style: none;
+        }
+
+        #tomorrow_tq ul {
+            border: deeppink 2px solid;
+            border-radius: 5px;
+            float: left;
+        }
+    </style>
+</head>
+<body>
+<div id="box">
+    <div id="query">
+        <h1 style="color:white;margin:0 auto;">天气查询</h1>
+        <input id="city" type="text"/>
+        <button id="submit">提交</button>
+    </div>
+    <div id="empty_box">
+        <div id="today_tq"></div>
+        <div id="tomorrow_tq"></div>
+    </div>
+
+</div>
+</body>
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            url: "http://47.98.53.254:8091/select/",
+            type: 'GET', //GET
+            async: false, //或false,是否异步
+            timeout: 5000, //超时时间    //返回的数据格式：json/xml/html/script/jsonp/text
+            dataType: 'json',
+            success: function (data) {
+                console.log(data.data);
+                var place = data.data.city;
+                var today = data.data.today;
+                var htmlToday = '<div><h3>'+place+'</h3><ul><li><span></span>日期：<span>' + today.date + '</span></li><li><span></span>白天：<span><img src="' + today.dayPictureUrl + '"></span></li><li><span></span>夜间：<span><img src="' + today.nightPictureUrl + '"</span></li><li><span></span>温度：<span>' + today.temperature + '</span></li><li><span></span>天气：<span>' + today.weather + '</span></li><li><span></span>风向：<span>' + today.wind + '</span></li></ul></div>'
+                $("#today_tq").append(htmlToday)
+                var list_tq = data.data.list;
+                for (var i = 0; i < list_tq.length; i++) {
+                    var htmlTomorrow = '<div><ul><li><span></span>日期：<span>' + list_tq[i].date + '</span></li><li><span></span>白天：<span><img src="' + list_tq[i].dayPictureUrl + '"></span></li><li><span></span>夜间：<span><img src="' + list_tq[i].nightPictureUrl + '"</span></li><li><span></span>温度：<span>' + list_tq[i].temperature + '</span></li><li><span></span>天气：<span>' + list_tq[i].weather + '</span></li><li><span></span>风向：<span>' + list_tq[i].wind + '</span></li></ul></div>'
+                    $("#tomorrow_tq").append(htmlTomorrow)
+                }
+
+                console.log(place, today)
+            },
+            error: function (xhr, textStatus) {
+                console.log('错误')
+                console.log(xhr)
+                console.log(textStatus)
+            },
+            complete: function () {
+                console.log('结束')
+            }
+        });
+        $("#submit").click(function () {
+            $("#today_tq").empty();
+            $("#tomorrow_tq").empty();
+            $.ajax({
+                url: "http://47.98.53.254:8091/select/",
+                type: 'POST', //GET
+                async: false, //或false,是否异步
+                timeout: 5000, //超时时间    //返回的数据格式：json/xml/html/script/jsonp/text
+                dataType: 'json',
+                data: {
+                    'city': $("#city").val()
+                },
+                success: function (data) {
+                    //
+                    console.log(data.data);
+                    var place = data.data.city
+                    var today = data.data.today
+                    var htmlToday = '<div><h3>'+place+'</h3><ul><li><span></span>日期：<span>' + today.date + '</span></li><li><span></span>白天：<span><img src="' + today.dayPictureUrl + '"></span></li><li><span></span>夜间：<span><img src="' + today.nightPictureUrl + '"</span></li><li><span></span>温度：<span>' + today.temperature + '</span></li><li><span></span>天气：<span>' + today.weather + '</span></li><li><span></span>风向：<span>' + today.wind + '</span></li></ul></div>'
+                    $("#today_tq").append(htmlToday)
+                    var list_tq = data.data.list
+                    for (var i = 0; i < list_tq.length; i++) {
+                        var htmlTomorrow = '<div><ul><li><span></span>日期：<span>' + list_tq[i].date + '</span></li><li><span></span>白天：<span><img src="' + list_tq[i].dayPictureUrl + '"></span></li><li><span></span>夜间：<span><img src="' + list_tq[i].nightPictureUrl + '"</span></li><li><span></span>温度：<span>' + list_tq[i].temperature + '</span></li><li><span></span>天气：<span>' + list_tq[i].weather + '</span></li><li><span></span>风向：<span>' + list_tq[i].wind + '</span></li></ul></div>'
+                        $("#tomorrow_tq").append(htmlTomorrow)
+                    }
+
+                },
+                error: function (xhr, textStatus) {
+                    console.log('错误')
+                    console.log(xhr)
+                    console.log(textStatus)
+                },
+                complete: function () {
+                    console.log('结束')
+                }
+            });
+        });
+
+    });
+</script>
+</html>
