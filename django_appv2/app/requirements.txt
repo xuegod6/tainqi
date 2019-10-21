@@ -1,6 +1,6 @@
 certifi==2018.11.29
 chardet==3.0.4
-Django==2.1
+Django==2.1.11
 django-crispy-forms==1.6.1
 Faker==0.7.11
 idna==2.8
